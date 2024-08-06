@@ -57,17 +57,18 @@ fi
 
 function blob_fixup() {
     case "${1}" in
+        system/priv-app/MiuiCamera/MiuiCamera.apk)
+            [ "$2" = "" ] && return 0
+            apktool_patch "${2}" "$MY_DIR/blob-patches"
+            split --bytes=20M -d "$2" "$2".part
+            ;;
         system/lib64/libcamera_algoup_jni.xiaomi.so|system/lib64/libcamera_mianode_jni.xiaomi.so)
             [ "$2" = "" ] && return 0
-			grep -q "libgui_shim_leicamera.so" "${2}" || "${PATCHELF}" --add-needed libgui_shim_leicamera.so "${2}"
+            grep -q "libgui_shim_leicamera.so" "${2}" || "${PATCHELF}" --add-needed libgui_shim_leicamera.so "${2}"
             ;;
         system/lib64/libmicampostproc_client.so)
             [ "$2" = "" ] && return 0
-			"${PATCHELF}" --remove-needed libhidltransport.so "${2}"
-            ;;
-        system/priv-app/MiuiCamera/MiuiCamera.apk)
-            [ "$2" = "" ] && return 0
-            split --bytes=20M -d "$2" "$2".part
+            "${PATCHELF}" --remove-needed libhidltransport.so "${2}"
             ;;
         *)
             return 1

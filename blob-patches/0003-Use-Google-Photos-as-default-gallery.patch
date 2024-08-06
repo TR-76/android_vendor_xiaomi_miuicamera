@@ -1,0 +1,127 @@
+From 777fd26b620670d10013c9e0c6b0068688f815b8 Mon Sep 17 00:00:00 2001
+From: ralph950412 <ralph950412@gmail.com>
+Date: Sun, 28 Jul 2024 00:59:03 +0800
+Subject: [PATCH 3/9] Use Google Photos as default gallery
+
+Signed-off-by: Tashfin Shakeer Rhythm <tashfinshakeerrhythm@gmail.com>
+---
+ smali/com/android/camera/ActivityBase.smali                 | 2 +-
+ smali/com/android/camera/GalleryHelper.smali                | 6 +++---
+ smali/com/android/camera/Util.smali                         | 2 +-
+ smali/com/android/camera/storage/Storage.smali              | 4 ++--
+ .../parallelservice/provider/ParallelProcessProvider.smali  | 6 +++---
+ 5 files changed, 10 insertions(+), 10 deletions(-)
+
+diff --git a/smali/com/android/camera/ActivityBase.smali b/smali/com/android/camera/ActivityBase.smali
+index 589348fa..f63c8ac0 100644
+--- a/smali/com/android/camera/ActivityBase.smali
++++ b/smali/com/android/camera/ActivityBase.smali
+@@ -1138,7 +1138,7 @@
+ .method public checkGalleryLock()V
+     .locals 2
+ 
+-    const-string v0, "com.miui.gallery"
++    const-string v0, "com.google.android.apps.photos"
+ 
+     .line 1
+     invoke-static {p0, v0}, Lcom/android/camera/Util;->isAppLocked(Landroid/content/Context;Ljava/lang/String;)Z
+diff --git a/smali/com/android/camera/GalleryHelper.smali b/smali/com/android/camera/GalleryHelper.smali
+index d861dc19..fdde99cb 100644
+--- a/smali/com/android/camera/GalleryHelper.smali
++++ b/smali/com/android/camera/GalleryHelper.smali
+@@ -338,7 +338,7 @@
+ 
+     move-result-object p0
+ 
+-    const-string p1, "com.miui.gallery"
++    const-string p1, "com.google.android.apps.photos"
+ 
+     invoke-static {p0, p1}, Lcom/android/camera/Util;->isAppLocked(Landroid/content/Context;Ljava/lang/String;)Z
+ 
+@@ -659,7 +659,7 @@
+ 
+     invoke-direct {p0, v0}, Landroid/content/Intent;-><init>(Ljava/lang/String;)V
+ 
+-    const-string v0, "com.miui.gallery"
++    const-string v0, "com.google.android.apps.photos"
+ 
+     .line 3
+     invoke-virtual {p0, v0}, Landroid/content/Intent;->setPackage(Ljava/lang/String;)Landroid/content/Intent;
+@@ -1861,7 +1861,7 @@
+ 
+     invoke-direct {v1, v2}, Landroid/content/Intent;-><init>(Ljava/lang/String;)V
+ 
+-    const-string v2, "com.miui.gallery"
++    const-string v2, "com.google.android.apps.photos"
+ 
+     .line 6
+     invoke-virtual {v1, v2}, Landroid/content/Intent;->setPackage(Ljava/lang/String;)Landroid/content/Intent;
+diff --git a/smali/com/android/camera/Util.smali b/smali/com/android/camera/Util.smali
+index 6499c3ac..5ddc84ed 100644
+--- a/smali/com/android/camera/Util.smali
++++ b/smali/com/android/camera/Util.smali
+@@ -224,7 +224,7 @@
+ 
+ .field public static final REVIEW_ACTION_IN_MULTI_WINDOW:Ljava/lang/String; = "com.android.camera.action.SPILIT_SCREEN_REVIEW"
+ 
+-.field public static final REVIEW_ACTIVITY_PACKAGE:Ljava/lang/String; = "com.miui.gallery"
++.field public static final REVIEW_ACTIVITY_PACKAGE:Ljava/lang/String; = "com.google.android.apps.photos"
+ 
+ .field public static final REVIEW_SCAN_RESULT_PACKAGE:Ljava/lang/String; = "com.xiaomi.scanner"
+ 
+diff --git a/smali/com/android/camera/storage/Storage.smali b/smali/com/android/camera/storage/Storage.smali
+index 8963f38b..e646188c 100644
+--- a/smali/com/android/camera/storage/Storage.smali
++++ b/smali/com/android/camera/storage/Storage.smali
+@@ -104,7 +104,7 @@
+ 
+ .field private static final SAVE_TO_CLOUD_ALBUM_NOGAUSSIAN:Ljava/lang/String; = "extra_no_gaussian"
+ 
+-.field private static final SAVE_TO_CLOUD_ALBUM_PACKAGE:Ljava/lang/String; = "com.miui.gallery"
++.field private static final SAVE_TO_CLOUD_ALBUM_PACKAGE:Ljava/lang/String; = "com.google.android.apps.photos"
+ 
+ .field private static final SAVE_TO_CLOUD_ALBUM_PATH_KAY:Ljava/lang/String; = "extra_file_path"
+ 
+@@ -4010,7 +4010,7 @@
+ 
+     invoke-direct {v0, v1}, Landroid/content/Intent;-><init>(Ljava/lang/String;)V
+ 
+-    const-string v1, "com.miui.gallery"
++    const-string v1, "com.google.android.apps.photos"
+ 
+     .line 2
+     invoke-virtual {v0, v1}, Landroid/content/Intent;->setPackage(Ljava/lang/String;)Landroid/content/Intent;
+diff --git a/smali_classes3/com/xiaomi/camera/parallelservice/provider/ParallelProcessProvider.smali b/smali_classes3/com/xiaomi/camera/parallelservice/provider/ParallelProcessProvider.smali
+index a9593072..6f3561e5 100644
+--- a/smali_classes3/com/xiaomi/camera/parallelservice/provider/ParallelProcessProvider.smali
++++ b/smali_classes3/com/xiaomi/camera/parallelservice/provider/ParallelProcessProvider.smali
+@@ -6,7 +6,7 @@
+ # static fields
+ .field private static final CALLER_GOOGLE_PHOTO:Ljava/lang/String; = "com.google.android.apps.photos"
+ 
+-.field private static final CALLER_MIUI_GALLERY:Ljava/lang/String; = "com.miui.gallery"
++.field private static final CALLER_MIUI_GALLERY:Ljava/lang/String; = "com.google.android.apps.photos"
+ 
+ .field private static final CALLING_SELF:Ljava/lang/String; = "com.android.camera"
+ 
+@@ -188,7 +188,7 @@
+     goto :goto_0
+ 
+     :sswitch_2
+-    const-string v0, "com.miui.gallery"
++    const-string v0, "com.google.android.apps.photos"
+ 
+     invoke-virtual {p0, v0}, Ljava/lang/String;->equals(Ljava/lang/Object;)Z
+ 
+@@ -757,7 +757,7 @@
+ 
+     move-result-object v2
+ 
+-    const-string v3, "com.miui.gallery"
++    const-string v3, "com.google.android.apps.photos"
+ 
+     const/16 v4, 0x80
+ 
+-- 
+2.45.2
+
