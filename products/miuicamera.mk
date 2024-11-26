@@ -21,8 +21,7 @@ PRODUCT_DEXPREOPT_SPEED_APPS += \
 # Permissions
 PRODUCT_COPY_FILES += \
     vendor/xiaomi/redwood-miuicamera/configs/default-permissions/miuicamera-permissions.xml:$(TARGET_COPY_OUT_SYSTEM)/etc/default-permissions/miuicamera-permissions.xml \
-    vendor/xiaomi/redwood-miuicamera/configs/permissions/privapp-permissions-miuicamera.xml:$(TARGET_COPY_OUT_SYSTEM)/etc/permissions/privapp-permissions-miuicamera.xml \
-    vendor/xiaomi/redwood-miuicamera/configs/permissions/privapp-permissions-miuivideoplayer.xml:$(TARGET_COPY_OUT_SYSTEM)/etc/permissions/privapp-permissions-miuivideoplayer.xml
+    vendor/xiaomi/redwood-miuicamera/configs/permissions/privapp-permissions-miuicamera.xml:$(TARGET_COPY_OUT_SYSTEM)/etc/permissions/privapp-permissions-miuicamera.xml
 
 # Sysconfig
 PRODUCT_COPY_FILES += \
