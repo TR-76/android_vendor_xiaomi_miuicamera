@@ -84,15 +84,3 @@ android_app_import {
 	},
 	privileged: true,
 }
-
-android_app_import {
-	name: "MiuiVideoPlayer",
-	owner: "xiaomi",
-	apk: "proprietary/system/priv-app/MiuiVideoPlayer/MiuiVideoPlayer.apk",
-	certificate: "platform",
-	dex_preopt: {
-		enabled: false,
-	},
-	privileged: true,
-}
-
