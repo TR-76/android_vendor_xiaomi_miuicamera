@@ -1,4 +1,4 @@
-# All unpinned blobs below are extracted from redwood global V816.0.5.0.UMSMIXM
+# All unpinned blobs below are extracted from redwood global V816.0.10.0.UMSMIXM
 
 product/priv-app/MiuiCamera/MiuiCamera.apk:system/priv-app/MiuiCamera/MiuiCamera.apk;OVERRIDES=GrapheneCamera,Camera,Camera2,Flash,Aperture
 system_ext/lib64/libcamera_algoup_jni.xiaomi.so:system/lib64/libcamera_algoup_jni.xiaomi.so
