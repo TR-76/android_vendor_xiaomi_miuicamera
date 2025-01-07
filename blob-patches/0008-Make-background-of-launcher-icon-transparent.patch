@@ -1,7 +1,7 @@
-From cc5d115e7099633465dd5ac1072e19880b774100 Mon Sep 17 00:00:00 2001
+From 94e81078a22e720d40f1994be495de3883f7ee9b Mon Sep 17 00:00:00 2001
 From: Arian <arian.kulmer@web.de>
 Date: Fri, 8 Mar 2024 03:52:46 +0100
-Subject: [PATCH 8/9] Make background of launcher icon transparent
+Subject: [PATCH 08/12] Make background of launcher icon transparent
 
 ---
  res/mipmap-xhdpi/ic_launcher_camera_cv.png   | Bin 44414 -> 16940 bytes
@@ -8799,5 +8799,5 @@ z53`{kKIPOo@nr9Ena5uTSR{~FGJsQ#(N!Q>0r>pQgcypTy#C)(ADe<gI=+w{AV;v$
 ivD3+%R~nC(ARUNv4{K;hWE>{DJX&hcRV!5xA^!tEHbx}?
 
 -- 
-2.45.2
+2.47.1
 

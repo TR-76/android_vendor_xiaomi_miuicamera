@@ -1,7 +1,7 @@
-From 493c4d03eceddf16ca727de542debf9007b00f19 Mon Sep 17 00:00:00 2001
+From 9d3a22283af008df55c59b50c4ea923fe93fbef7 Mon Sep 17 00:00:00 2001
 From: Tashfin Shakeer Rhythm <tashfinshakeerrhythm@gmail.com>
 Date: Tue, 20 Aug 2024 14:52:11 +0600
-Subject: [PATCH 5/9] Match camera icon based on monet
+Subject: [PATCH 05/12] Match camera icon based on monet
 
 Signed-off-by: Tashfin Shakeer Rhythm <tashfinshakeerrhythm@gmail.com>
 ---
@@ -683,5 +683,5 @@ index 630d8fc0..cea4dd71 100644
  # direct methods
  .method private constructor <init>()V
 -- 
-2.45.2
+2.47.1
 

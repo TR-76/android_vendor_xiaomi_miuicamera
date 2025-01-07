@@ -1,7 +1,7 @@
-From b450e40713e0249ba9282fc7ad7ee432b827e47c Mon Sep 17 00:00:00 2001
+From 64f7775a5d32a40b4a2d518467a2746584a0d1e7 Mon Sep 17 00:00:00 2001
 From: Arian <arian.kulmer@web.de>
 Date: Fri, 8 Mar 2024 02:11:53 +0100
-Subject: [PATCH 2/9] Support third party galleries
+Subject: [PATCH 02/12] Support third party galleries
 
 Signed-off-by: Tashfin Shakeer Rhythm <tashfinshakeerrhythm@gmail.com>
 ---
@@ -24,5 +24,5 @@ index d51d7748..d861dc19 100644
      const/4 p1, 0x1
  
 -- 
-2.45.2
+2.47.1
 
