@@ -1,7 +1,7 @@
-From ced4a63748c492ca0d28e69c66b5f04ee019d4ee Mon Sep 17 00:00:00 2001
+From 8499a9b908999a41f2dcb19d06201fa587a1d10b Mon Sep 17 00:00:00 2001
 From: Alexander Winkowski <dereference23@outlook.com>
 Date: Thu, 18 Apr 2024 11:47:56 +0200
-Subject: [PATCH 6/9] Disable `BackupAgent`
+Subject: [PATCH 06/12] Disable `BackupAgent`
 
 * Doesn't work on AOSP
 
@@ -24,5 +24,5 @@ index f1f14138..302a872d 100644
          <meta-data android:name="miui.supportRequiredModifiable" android:value="true"/>
          <meta-data android:name="com.miui.bugreport.LOG_DIR" android:resource="@xml/log_paths"/>
 -- 
-2.45.2
+2.47.1
 

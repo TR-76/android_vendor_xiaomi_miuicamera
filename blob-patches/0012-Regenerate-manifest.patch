@@ -1,0 +1,26 @@
+From af673e52f64c64ba8abb0bbbc4e4b8f57f9a0af4 Mon Sep 17 00:00:00 2001
+From: Tashfin Shakeer Rhythm <tashfinshakeerrhythm@gmail.com>
+Date: Mon, 6 Jan 2025 20:56:37 +0600
+Subject: [PATCH 12/12] Regenerate manifest
+
+Signed-off-by: Tashfin Shakeer Rhythm <tashfinshakeerrhythm@gmail.com>
+---
+ AndroidManifest.xml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/AndroidManifest.xml b/AndroidManifest.xml
+index 302a872d..7dd77b57 100644
+--- a/AndroidManifest.xml
++++ b/AndroidManifest.xml
+@@ -221,7 +221,7 @@
+         <provider android:authorities="com.android.camera.fileProvider" android:exported="false" android:grantUriPermissions="true" android:name="androidx.core.content.FileProvider">
+             <meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/file_paths"/>
+         </provider>
+-        <provider android:authorities="@string/provider_authority" android:exported="true" android:grantUriPermissions="true" android:name="com.xiaomi.camera.parallelservice.provider.ParallelProcessProvider" android:syncable="false"/>
++        <provider android:authorities="com.xiaomi.camera.parallelservice.provider.SpecialTypesProvider" android:exported="true" android:grantUriPermissions="true" android:name="com.xiaomi.camera.parallelservice.provider.ParallelProcessProvider" android:syncable="false"/>
+         <provider android:authorities="com.android.camera.provider.bugreport" android:exported="true" android:name="com.miui.bugreport.logprovider.DumpLogProvider" android:permission="com.miui.bugreport.permission.DUMP_CACHED_LOG" android:readPermission="com.miui.bugreport.permission.DUMP_CACHED_LOG">
+             <intent-filter>
+                 <action android:name="com.miui.bugreport.intent.ACTION_DUMP_CACHED_LOG"/>
+-- 
+2.47.1
+
