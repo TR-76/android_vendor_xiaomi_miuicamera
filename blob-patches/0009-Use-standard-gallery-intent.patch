@@ -1,7 +1,7 @@
 From 59d6a66ca4b643f4e060c4904fa3ef8f082750de Mon Sep 17 00:00:00 2001
 From: Arian <arian.kulmer@web.de>
 Date: Thu, 28 Nov 2024 20:05:39 +0530
-Subject: [PATCH 09/12] Use standard gallery intent
+Subject: [PATCH 09/13] Use standard gallery intent
 
 *Change com.android.camera.action.REVIEW to android.provider.action.REVIEW
 ---
@@ -10,7 +10,7 @@ Subject: [PATCH 09/12] Use standard gallery intent
  2 files changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/smali/com/android/camera/GalleryHelper.smali b/smali/com/android/camera/GalleryHelper.smali
-index fdde99cb..a83ca276 100644
+index fdde99cb8..a83ca276c 100644
 --- a/smali/com/android/camera/GalleryHelper.smali
 +++ b/smali/com/android/camera/GalleryHelper.smali
 @@ -713,7 +713,7 @@
@@ -32,7 +32,7 @@ index fdde99cb..a83ca276 100644
      .line 10
      invoke-static {p1, v1, p0}, Lcom/android/camera/log/Log;->d(Ljava/lang/String;Ljava/lang/String;[Ljava/lang/Object;)V
 diff --git a/smali/com/android/camera/Util.smali b/smali/com/android/camera/Util.smali
-index 5ddc84ed..a3ef6978 100644
+index 5ddc84ed4..a3ef69781 100644
 --- a/smali/com/android/camera/Util.smali
 +++ b/smali/com/android/camera/Util.smali
 @@ -220,7 +220,7 @@

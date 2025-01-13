@@ -1,7 +1,7 @@
 From 9d3a22283af008df55c59b50c4ea923fe93fbef7 Mon Sep 17 00:00:00 2001
 From: Tashfin Shakeer Rhythm <tashfinshakeerrhythm@gmail.com>
 Date: Tue, 20 Aug 2024 14:52:11 +0600
-Subject: [PATCH 05/12] Match camera icon based on monet
+Subject: [PATCH 05/13] Match camera icon based on monet
 
 Signed-off-by: Tashfin Shakeer Rhythm <tashfinshakeerrhythm@gmail.com>
 ---
@@ -20,7 +20,7 @@ Signed-off-by: Tashfin Shakeer Rhythm <tashfinshakeerrhythm@gmail.com>
 
 diff --git a/res/mipmap-anydpi/ic_launcher_camera_cv.xml b/res/mipmap-anydpi/ic_launcher_camera_cv.xml
 new file mode 100644
-index 00000000..d26a5217
+index 000000000..d26a52171
 --- /dev/null
 +++ b/res/mipmap-anydpi/ic_launcher_camera_cv.xml
 @@ -0,0 +1,5 @@
@@ -647,7 +647,7 @@ literal 0
 HcmV?d00001
 
 diff --git a/res/values/public.xml b/res/values/public.xml
-index 50c01dbd..99c52c1c 100644
+index 50c01dbd1..99c52c1c1 100644
 --- a/res/values/public.xml
 +++ b/res/values/public.xml
 @@ -10874,6 +10874,7 @@
@@ -659,7 +659,7 @@ index 50c01dbd..99c52c1c 100644
      <public type="plurals" name="a_hour_ago" id="0x7f100000" />
      <public type="plurals" name="abbrev_a_hour_ago" id="0x7f100001" />
 diff --git a/smali/com/android/camera/R$mipmap.smali b/smali/com/android/camera/R$mipmap.smali
-index ca26b22d..54cc45f7 100644
+index ca26b22dd..54cc45f70 100644
 --- a/smali/com/android/camera/R$mipmap.smali
 +++ b/smali/com/android/camera/R$mipmap.smali
 @@ -22,6 +22,7 @@
@@ -671,7 +671,7 @@ index ca26b22d..54cc45f7 100644
  # direct methods
  .method private constructor <init>()V
 diff --git a/smali_classes2/com/android/camera/theme/cv/R$mipmap.smali b/smali_classes2/com/android/camera/theme/cv/R$mipmap.smali
-index 630d8fc0..cea4dd71 100644
+index 630d8fc0c..cea4dd71c 100644
 --- a/smali_classes2/com/android/camera/theme/cv/R$mipmap.smali
 +++ b/smali_classes2/com/android/camera/theme/cv/R$mipmap.smali
 @@ -16,6 +16,7 @@
