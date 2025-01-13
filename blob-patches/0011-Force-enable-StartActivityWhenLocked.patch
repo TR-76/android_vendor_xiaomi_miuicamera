@@ -1,7 +1,7 @@
 From d1753f1fea09c0ae0ae5aa1ca988841b63e352bb Mon Sep 17 00:00:00 2001
 From: Arian <arian.kulmer@web.de>
 Date: Tue, 15 Oct 2024 19:06:16 +0200
-Subject: [PATCH 11/12] Force enable StartActivityWhenLocked
+Subject: [PATCH 11/13] Force enable StartActivityWhenLocked
 
 MIUI sends this with the intent, but on AOSP we don't get this parameter.
 
@@ -11,7 +11,7 @@ Signed-off-by: Tashfin Shakeer Rhythm <tashfinshakeerrhythm@gmail.com>
  1 file changed, 3 insertions(+), 51 deletions(-)
 
 diff --git a/smali/com/android/camera/CameraIntentManager.smali b/smali/com/android/camera/CameraIntentManager.smali
-index 076bfd58..a03dfc00 100644
+index 076bfd58f..a03dfc009 100644
 --- a/smali/com/android/camera/CameraIntentManager.smali
 +++ b/smali/com/android/camera/CameraIntentManager.smali
 @@ -381,59 +381,11 @@

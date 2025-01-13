@@ -1,7 +1,7 @@
 From 8e7386b612578f7ca48990c14c3e3a0192749e79 Mon Sep 17 00:00:00 2001
 From: ralph950412 <ralph950412@gmail.com>
 Date: Sun, 28 Jul 2024 00:59:03 +0800
-Subject: [PATCH 03/12] Use Google Photos as default gallery
+Subject: [PATCH 03/13] Use Google Photos as default gallery
 
 Signed-off-by: Tashfin Shakeer Rhythm <tashfinshakeerrhythm@gmail.com>
 ---
@@ -13,7 +13,7 @@ Signed-off-by: Tashfin Shakeer Rhythm <tashfinshakeerrhythm@gmail.com>
  5 files changed, 10 insertions(+), 10 deletions(-)
 
 diff --git a/smali/com/android/camera/ActivityBase.smali b/smali/com/android/camera/ActivityBase.smali
-index 589348fa..f63c8ac0 100644
+index 589348fa0..f63c8ac03 100644
 --- a/smali/com/android/camera/ActivityBase.smali
 +++ b/smali/com/android/camera/ActivityBase.smali
 @@ -1138,7 +1138,7 @@
@@ -26,7 +26,7 @@ index 589348fa..f63c8ac0 100644
      .line 1
      invoke-static {p0, v0}, Lcom/android/camera/Util;->isAppLocked(Landroid/content/Context;Ljava/lang/String;)Z
 diff --git a/smali/com/android/camera/GalleryHelper.smali b/smali/com/android/camera/GalleryHelper.smali
-index d861dc19..fdde99cb 100644
+index d861dc19e..fdde99cb8 100644
 --- a/smali/com/android/camera/GalleryHelper.smali
 +++ b/smali/com/android/camera/GalleryHelper.smali
 @@ -338,7 +338,7 @@
@@ -57,7 +57,7 @@ index d861dc19..fdde99cb 100644
      .line 6
      invoke-virtual {v1, v2}, Landroid/content/Intent;->setPackage(Ljava/lang/String;)Landroid/content/Intent;
 diff --git a/smali/com/android/camera/Util.smali b/smali/com/android/camera/Util.smali
-index 6499c3ac..5ddc84ed 100644
+index 6499c3ac0..5ddc84ed4 100644
 --- a/smali/com/android/camera/Util.smali
 +++ b/smali/com/android/camera/Util.smali
 @@ -224,7 +224,7 @@
@@ -70,7 +70,7 @@ index 6499c3ac..5ddc84ed 100644
  .field public static final REVIEW_SCAN_RESULT_PACKAGE:Ljava/lang/String; = "com.xiaomi.scanner"
  
 diff --git a/smali/com/android/camera/storage/Storage.smali b/smali/com/android/camera/storage/Storage.smali
-index 8963f38b..e646188c 100644
+index 8963f38b1..e646188ca 100644
 --- a/smali/com/android/camera/storage/Storage.smali
 +++ b/smali/com/android/camera/storage/Storage.smali
 @@ -104,7 +104,7 @@
@@ -92,7 +92,7 @@ index 8963f38b..e646188c 100644
      .line 2
      invoke-virtual {v0, v1}, Landroid/content/Intent;->setPackage(Ljava/lang/String;)Landroid/content/Intent;
 diff --git a/smali_classes3/com/xiaomi/camera/parallelservice/provider/ParallelProcessProvider.smali b/smali_classes3/com/xiaomi/camera/parallelservice/provider/ParallelProcessProvider.smali
-index a9593072..6f3561e5 100644
+index a95930720..6f3561e58 100644
 --- a/smali_classes3/com/xiaomi/camera/parallelservice/provider/ParallelProcessProvider.smali
 +++ b/smali_classes3/com/xiaomi/camera/parallelservice/provider/ParallelProcessProvider.smali
 @@ -6,7 +6,7 @@

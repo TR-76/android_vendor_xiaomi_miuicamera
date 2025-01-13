@@ -1,7 +1,7 @@
 From 9e6599d3047f6c24ffebbec522820885176840e3 Mon Sep 17 00:00:00 2001
 From: Arian <arian.kulmer@web.de>
 Date: Mon, 13 Mar 2023 15:46:13 +0100
-Subject: [PATCH 01/12] ICustomCaptureResult: Add readout timestamp
+Subject: [PATCH 01/13] ICustomCaptureResult: Add readout timestamp
 
 commit [1] added two arguments to the CaptureResultExtras constructor.
 Patch MiuiCamera to provide these arguments
@@ -15,7 +15,7 @@ Signed-off-by: Tashfin Shakeer Rhythm <tashfinshakeerrhythm@gmail.com>
  1 file changed, 30 insertions(+), 2 deletions(-)
 
 diff --git a/smali_classes3/com/xiaomi/protocol/ICustomCaptureResult.smali b/smali_classes3/com/xiaomi/protocol/ICustomCaptureResult.smali
-index bfff105b..0d9436a1 100644
+index bfff105b0..0d9436a19 100644
 --- a/smali_classes3/com/xiaomi/protocol/ICustomCaptureResult.smali
 +++ b/smali_classes3/com/xiaomi/protocol/ICustomCaptureResult.smali
 @@ -412,7 +412,7 @@

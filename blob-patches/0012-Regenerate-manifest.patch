@@ -1,7 +1,7 @@
 From af673e52f64c64ba8abb0bbbc4e4b8f57f9a0af4 Mon Sep 17 00:00:00 2001
 From: Tashfin Shakeer Rhythm <tashfinshakeerrhythm@gmail.com>
 Date: Mon, 6 Jan 2025 20:56:37 +0600
-Subject: [PATCH 12/12] Regenerate manifest
+Subject: [PATCH 12/13] Regenerate manifest
 
 Signed-off-by: Tashfin Shakeer Rhythm <tashfinshakeerrhythm@gmail.com>
 ---
@@ -9,7 +9,7 @@ Signed-off-by: Tashfin Shakeer Rhythm <tashfinshakeerrhythm@gmail.com>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/AndroidManifest.xml b/AndroidManifest.xml
-index 302a872d..7dd77b57 100644
+index 302a872d1..7dd77b57e 100644
 --- a/AndroidManifest.xml
 +++ b/AndroidManifest.xml
 @@ -221,7 +221,7 @@

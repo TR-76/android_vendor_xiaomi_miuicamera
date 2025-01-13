@@ -1,7 +1,7 @@
 From 0a9a1d7224687c844e5b1a8c2991782672831a6e Mon Sep 17 00:00:00 2001
 From: danielml <daniel@danielml.dev>
 Date: Fri, 19 Apr 2024 17:32:08 +0200
-Subject: [PATCH 07/12] Assume that mod_device is global
+Subject: [PATCH 07/13] Assume that mod_device is global
 
 Otherwise, the app tries to start a custom permissions dialog which
 has dependencies on HyperOS Security Center app
@@ -13,7 +13,7 @@ Signed-off-by: danielml <daniel@danielml.dev>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/smali_classes2/OooO0OO/OooO0oO/OooO00o/OooO0o.smali b/smali_classes2/OooO0OO/OooO0oO/OooO00o/OooO0o.smali
-index 3bc1941c..d27c858b 100644
+index 3bc1941c9..d27c858b5 100644
 --- a/smali_classes2/OooO0OO/OooO0oO/OooO00o/OooO0o.smali
 +++ b/smali_classes2/OooO0OO/OooO0oO/OooO00o/OooO0o.smali
 @@ -1155,7 +1155,7 @@
