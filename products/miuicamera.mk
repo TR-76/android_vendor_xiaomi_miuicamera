@@ -21,8 +21,7 @@ PRODUCT_DEXPREOPT_SPEED_APPS += \
 # Permissions
 PRODUCT_COPY_FILES += \
     vendor/xiaomi/redwood-miuicamera/configs/default-permissions/miuicamera-permissions.xml:$(TARGET_COPY_OUT_SYSTEM)/etc/default-permissions/miuicamera-permissions.xml \
-    vendor/xiaomi/redwood-miuicamera/configs/permissions/privapp-permissions-miuicamera.xml:$(TARGET_COPY_OUT_SYSTEM)/etc/permissions/privapp-permissions-miuicamera.xml \
-    vendor/xiaomi/redwood-miuicamera/configs/permissions/privapp-permissions-miuivideoplayer.xml:$(TARGET_COPY_OUT_SYSTEM)/etc/permissions/privapp-permissions-miuivideoplayer.xml
+    vendor/xiaomi/redwood-miuicamera/configs/permissions/privapp-permissions-miuicamera.xml:$(TARGET_COPY_OUT_SYSTEM)/etc/permissions/privapp-permissions-miuicamera.xml
 
 # Sysconfig
 PRODUCT_COPY_FILES += \
@@ -51,6 +50,18 @@ PRODUCT_PACKAGES += \
     MlkitBarcodeUI \
     VisionBarcode \
     MiuiQRCameraOverlay
+	
+# MiVideoPlayer
+TARGET_INCLUDES_MIUI_VIDEOPLAYER ?= true
+
+ifeq ($(TARGET_INCLUDES_MIUI_VIDEOPLAYER),true)
+PRODUCT_PACKAGES += \
+    MiuiVideoPlayer
+	
+PRODUCT_COPY_FILES += \
+    vendor/xiaomi/redwood-miuicamera/configs/permissions/privapp-permissions-miuivideoplayer.xml:$(TARGET_COPY_OUT_SYSTEM)/etc/permissions/privapp-permissions-miuivideoplayer.xml
+
+endif
 
 DEVICE_PACKAGE_OVERLAYS += \
     vendor/xiaomi/redwood-miuicamera/overlay
