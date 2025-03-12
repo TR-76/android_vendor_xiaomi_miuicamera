@@ -8,9 +8,6 @@ soong_namespace {
 	],
 }
 
-soong_namespace {
-}
-
 android_app_import {
 	name: "MiuiCamera",
 	owner: "xiaomi",
