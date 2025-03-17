@@ -87,7 +87,6 @@ cc_prebuilt_library_shared {
 				"libvndksupport",
 				"libcamera_client",
 				"libcamera_metadata",
-				"libgui-xiaomi",
 				"libbinder",
 				"libutils",
 				"libcutils",
@@ -101,6 +100,7 @@ cc_prebuilt_library_shared {
 	},
 	compile_multilib: "64",
 	prefer: true,
+	allow_undefined_symbols: true,
 }
 
 cc_prebuilt_library_shared {
@@ -116,7 +116,7 @@ cc_prebuilt_library_shared {
 				"libvndksupport",
                 "libcamera_client",
                 "libcamera_metadata",
-                "libgui-xiaomi",
+				"libgui-xiaomi",
                 "libbinder",
                 "libutils",
                 "libcutils",
@@ -209,7 +209,23 @@ cc_prebuilt_library_shared {
 	target: {
 		android_arm64: {
 			srcs: ["proprietary/system/lib64/libgui-xiaomi.so"],
-			shared_libs: ["libbinder_shim", "libgralloctypes", "android.hardware.graphics.mapper@4.0", "android.hardware.graphics.common-V6-ndk", "android.hardware.graphics.bufferqueue@1.0", "android.hardware.graphics.bufferqueue@2.0", "android.hardware.graphics.common@1.1", "android.hardware.graphics.common@1.2", "android.hidl.token@1.0-utils", "libbase", "libcutils", "libEGL", "libGLESv2", "libhidlbase", "liblog", "libnativewindow", "libsync", "libui", "libutils", "libvndksupport", "libbinder", "libc++", "libc", "libm", "libdl", ],
+			shared_libs: ["libbinder_shim", "libgralloctypes", "android.hardware.graphics.mapper@4.0", "android.hardware.graphics.common-V5-ndk", "android.hardware.graphics.bufferqueue@1.0", "android.hardware.graphics.bufferqueue@2.0", "android.hardware.graphics.common@1.1", "android.hardware.graphics.common@1.2", "android.hidl.token@1.0-utils", "libbase", "libcutils", "libEGL", "libGLESv2", "libhidlbase", "liblog", "libnativewindow", "libsync", "libui", "libutils", "libvndksupport", "libbinder", "libc++", "libc", "libm", "libdl", ],
+		},
+	},
+	compile_multilib: "64",
+	prefer: true,
+}
+
+cc_prebuilt_library_shared {
+	name: "android.hardware.graphics.common-V5-ndk",
+	owner: "xiaomi",
+	strip: {
+		none: true,
+	},
+	target: {
+		android_arm64: {
+			srcs: ["proprietary/system/lib64/android.hardware.graphics.common-V5-ndk.so"],
+			shared_libs: ["libbinder_ndk", "android.hardware.common-V2-ndk", "libc++", "libc", "libm", "libdl", ],
 		},
 	},
 	compile_multilib: "64",
