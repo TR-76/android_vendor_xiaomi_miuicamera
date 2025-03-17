@@ -209,7 +209,7 @@ cc_prebuilt_library_shared {
 	target: {
 		android_arm64: {
 			srcs: ["proprietary/system/lib64/libgui-xiaomi.so"],
-			shared_libs: ["libbinder_shim", "libgralloctypes", "android.hardware.graphics.mapper@4.0", "android.hardware.graphics.common-V5-ndk", "android.hardware.graphics.bufferqueue@1.0", "android.hardware.graphics.bufferqueue@2.0", "android.hardware.graphics.common@1.1", "android.hardware.graphics.common@1.2", "android.hidl.token@1.0-utils", "libbase", "libcutils", "libEGL", "libGLESv2", "libhidlbase", "liblog", "libnativewindow", "libsync", "libui", "libutils", "libvndksupport", "libbinder", "libc++", "libc", "libm", "libdl", ],
+			shared_libs: ["libbinder_shim", "libgralloctypes", "android.hardware.graphics.mapper@4.0", "android.hardware.graphics.common-V6-ndk", "android.hardware.graphics.bufferqueue@1.0", "android.hardware.graphics.bufferqueue@2.0", "android.hardware.graphics.common@1.1", "android.hardware.graphics.common@1.2", "android.hidl.token@1.0-utils", "libbase", "libcutils", "libEGL", "libGLESv2", "libhidlbase", "liblog", "libnativewindow", "libsync", "libui", "libutils", "libvndksupport", "libbinder", "libc++", "libc", "libm", "libdl", ],
 		},
 	},
 	compile_multilib: "64",
