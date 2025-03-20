@@ -18,6 +18,9 @@ PRODUCT_SOONG_NAMESPACES += \
 
 MIUICAMERA_PATH := vendor/xiaomi/camera
 
+# Uses MiuiCamera
+TARGET_USES_MIUI_CAMERA := true
+
 # Camera property
 PRODUCT_PRODUCT_PROPERTIES += \
     ro.com.google.lens.oem_camera_package=com.android.camera \
