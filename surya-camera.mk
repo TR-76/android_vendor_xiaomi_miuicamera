@@ -30,8 +30,7 @@ PRODUCT_PRODUCT_PROPERTIES += \
     ro.miui.notch=1
 
 PRODUCT_SYSTEM_PROPERTIES += \
-    persist.vendor.camera.privapp.list=com.android.camera \
-    vendor.camera.aux.packagelist=com.android.camera
+    persist.vendor.camera.privapp.list=com.android.camera
 
 # HIDL
 DEVICE_FRAMEWORK_COMPATIBILITY_MATRIX_FILE += $(MIUICAMERA_PATH)/configs/hidl/xiaomi_framework_compatibility_matrix.xml
