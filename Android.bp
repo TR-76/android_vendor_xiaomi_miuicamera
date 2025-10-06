@@ -230,4 +230,5 @@ cc_prebuilt_library_shared {
 	},
 	compile_multilib: "64",
 	prefer: true,
+        sdk_version: "current",
 }
