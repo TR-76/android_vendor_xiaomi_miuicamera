@@ -11,7 +11,7 @@ Extracted from lisa MIUI package (refer proprietary-files.txt for version).
 
 1. Clone this repo to `vendor/xiaomi/camera` or use this commands:
 ```
-git clone -b 4.7 https://gitea.com/HinohArata/vendor_xiaomi_camera.git vendor/xiaomi/camera --single-branch
+git clone -b 4.7-bkl https://github.com/Arata-Labs/vendor_xiaomi_camera.git vendor/xiaomi/camera --single-branch
 ```
 
 2. Inherit it from `device.mk` in device tree:
