@@ -1,0 +1,49 @@
+From 5f59aa12d878741351c6111ba01102cf085af4da Mon Sep 17 00:00:00 2001
+From: Arian <arian.kulmer@web.de>
+Date: Thu, 28 Nov 2024 20:05:39 +0530
+Subject: [PATCH 05/10] Use standard gallery intent
+
+*Change com.android.camera.action.REVIEW to android.provider.action.REVIEW
+---
+ smali/com/android/camera/GalleryHelper.smali | 4 ++--
+ smali/com/android/camera/Util.smali          | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/smali/com/android/camera/GalleryHelper.smali b/smali/com/android/camera/GalleryHelper.smali
+index faecdea20..fb04fb7bc 100644
+--- a/smali/com/android/camera/GalleryHelper.smali
++++ b/smali/com/android/camera/GalleryHelper.smali
+@@ -1076,7 +1076,7 @@
+     move-result p0
+ 
+     .line 9
+-    const-string v0, "com.android.camera.action.REVIEW"
++    const-string v0, "android.provider.action.REVIEW"
+ 
+     .line 10
+     .line 11
+@@ -1198,7 +1198,7 @@
+ 
+     .line 69
+     .line 70
+-    const-string v1, "gotoGallery: com.android.camera.action.REVIEW"
++    const-string v1, "gotoGallery: android.provider.action.REVIEW"
+ 
+     .line 71
+     .line 72
+diff --git a/smali/com/android/camera/Util.smali b/smali/com/android/camera/Util.smali
+index a7970de98..1376bdef8 100644
+--- a/smali/com/android/camera/Util.smali
++++ b/smali/com/android/camera/Util.smali
+@@ -224,7 +224,7 @@
+ 
+ .field public static final REQUEST_CODE_OPEN_MIUI_EXTRA_PHOTO:I = 0x8c35
+ 
+-.field public static final REVIEW_ACTION:Ljava/lang/String; = "com.android.camera.action.REVIEW"
++.field public static final REVIEW_ACTION:Ljava/lang/String; = "android.provider.action.REVIEW"
+ 
+ .field public static final REVIEW_ACTION_IN_MULTI_WINDOW:Ljava/lang/String; = "com.android.camera.action.SPILIT_SCREEN_REVIEW"
+ 
+-- 
+2.49.1
+

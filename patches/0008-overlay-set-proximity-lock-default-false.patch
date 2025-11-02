@@ -1,0 +1,25 @@
+From df40ea0a526c6de2db985793dd93850a635c07ca Mon Sep 17 00:00:00 2001
+From: Verevka <verevka86@gmail.com>
+Date: Mon, 30 Dec 2024 16:43:23 +0300
+Subject: [PATCH 09/10] overlay: set proximity lock default false
+
+---
+ res/values/bools.xml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/res/values/bools.xml b/res/values/bools.xml
+index 2b59e2834..686d65078 100644
+--- a/res/values/bools.xml
++++ b/res/values/bools.xml
+@@ -52,7 +52,7 @@
+     <bool name="pref_camera_professional_audio_map_default">true</bool>
+     <bool name="pref_camera_professional_histogram_default_off">false</bool>
+     <bool name="pref_camera_professional_histogram_default_on">true</bool>
+-    <bool name="pref_camera_proximity_lock_default">true</bool>
++    <bool name="pref_camera_proximity_lock_default">false</bool>
+     <bool name="pref_camera_quick_shot_anim_enable_default">true</bool>
+     <bool name="pref_camera_quick_shot_enable_default">true</bool>
+     <bool name="pref_camera_quick_tap_shot_default">false</bool>
+-- 
+2.49.1
+

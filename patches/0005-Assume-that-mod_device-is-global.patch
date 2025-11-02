@@ -1,0 +1,31 @@
+From 85614a7a0a1108ca5339d2a0a5299e157f08d3bf Mon Sep 17 00:00:00 2001
+From: danielml <daniel@danielml.dev>
+Date: Fri, 19 Apr 2024 17:32:08 +0200
+Subject: [PATCH 06/10] Assume that mod_device is global
+
+Otherwise, the app tries to start a custom permissions dialog which
+has dependencies on HyperOS Security Center app
+
+Change-Id: I8962a6e409f5aa30f84fccd482fefe78767069c2
+Signed-off-by: danielml <daniel@danielml.dev>
+Signed-off-by: hoang1007 <hoangvuhuy1007@gmail.com>
+---
+ smali_classes2/miuix/os/Build.smali | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/smali_classes2/miuix/os/Build.smali b/smali_classes2/miuix/os/Build.smali
+index 1bc0f3c68..280ce66ac 100644
+--- a/smali_classes2/miuix/os/Build.smali
++++ b/smali_classes2/miuix/os/Build.smali
+@@ -39,7 +39,7 @@
+     .line 12
+     .line 13
+     .line 14
+-    move-result v0
++    const/4 v0, 0x1
+ 
+     .line 15
+     sput-boolean v0, Lmiuix/os/Build;->IS_INTERNATIONAL_BUILD:Z
+-- 
+2.49.1
+

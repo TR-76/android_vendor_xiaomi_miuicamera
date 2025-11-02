@@ -1,0 +1,26 @@
+From 4acf6a850b9c46168d3643d1337652eba2f3f833 Mon Sep 17 00:00:00 2001
+From: Fuutao <fuutaoao@gmail.com>
+Date: Thu, 23 May 2024 19:29:29 +0800
+Subject: [PATCH 07/10] AndroidManifest.xml: Disabled Video Cast Tile
+
+Signed-off-by: Fuutao <fuutaoao@gmail.com>
+---
+ AndroidManifest.xml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/AndroidManifest.xml b/AndroidManifest.xml
+index 0dccc84e5..1b04e7a62 100644
+--- a/AndroidManifest.xml
++++ b/AndroidManifest.xml
+@@ -233,7 +233,7 @@
+                 <action android:name="com.miui.bugreport.intent.ACTION_DUMP_CACHED_LOG"/>
+             </intent-filter>
+         </provider>
+-        <service android:enabled="true" android:exported="true" android:icon="@drawable/ic_remote_camera_control" android:label="@string/video_cast_service_name" android:name="com.xiaomi.camera.videocast.VideoCastTileService" android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
++        <service android:enabled="false" android:exported="false" android:icon="@drawable/ic_remote_camera_control" android:label="@string/video_cast_service_name" android:name="com.xiaomi.camera.videocast.VideoCastTileService" android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+             <intent-filter>
+                 <action android:name="android.service.quicksettings.action.QS_TILE"/>
+             </intent-filter>
+-- 
+2.49.1
+
