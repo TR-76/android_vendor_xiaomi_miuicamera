@@ -19,7 +19,8 @@ PRODUCT_SOONG_NAMESPACES += \
 MIUICAMERA_PATH := vendor/xiaomi/camera
 
 # Uses MiuiCamera
-TARGET_USES_MIUI_CAMERA := true
+$(call soong_config_set,camera,package_name,com.xiaomi.sessionparams.clientName)
+$(call soong_config_set,camera,uses_miui_camera,true)
 
 # Camera property
 PRODUCT_PRODUCT_PROPERTIES += \
