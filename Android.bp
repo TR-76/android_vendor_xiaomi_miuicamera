@@ -20,6 +20,17 @@ android_app_import {
 	privileged: true,
 }
 
+android_app_import {
+	name: "MiuiScanner",
+	owner: "xiaomi",
+	apk: "proprietary/system/priv-app/MiuiScanner/MiuiScanner.apk",
+	certificate: "platform",
+	dex_preopt: {
+		enabled: false,
+	},
+	privileged: true,
+}
+
 dex_import {
 	name: "vendor.xiaomi.hardware.misys-V1.0-java",
 	owner: "xiaomi",
