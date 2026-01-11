@@ -1,0 +1,77 @@
+From 82d698b511796a09b016faee45fcd7145ba51912 Mon Sep 17 00:00:00 2001
+From: HinohArata <mmgcntk@gmail.com>
+Date: Tue, 7 Oct 2025 11:56:10 +0700
+Subject: [PATCH 2/5] Revert "Add missing IProducerListener callbacks to
+ BLASTBufferQueue"
+
+This reverts commit 7c935090e839ec3391c6f94d46a2367e59a46056.
+---
+ libs/gui/BLASTBufferQueue.cpp            | 11 -----------
+ libs/gui/IProducerListener.cpp           |  6 ------
+ libs/gui/include/gui/IProducerListener.h |  6 ------
+ 3 files changed, 23 deletions(-)
+
+diff --git a/libs/gui/BLASTBufferQueue.cpp b/libs/gui/BLASTBufferQueue.cpp
+index 2fa4b3d5b7..3d344b7603 100644
+--- a/libs/gui/BLASTBufferQueue.cpp
++++ b/libs/gui/BLASTBufferQueue.cpp
+@@ -1146,17 +1146,6 @@ public:
+         AsyncWorker::getInstance().post(
+                 [listener = mListener, slots = slots]() { listener->onBuffersDiscarded(slots); });
+     }
+-
+-    void onBufferDetached(int slot) override {
+-        AsyncWorker::getInstance().post(
+-                [listener = mListener, slot = slot]() { listener->onBufferDetached(slot); });
+-    }
+-
+-#if COM_ANDROID_GRAPHICS_LIBGUI_FLAGS(BQ_CONSUMER_ATTACH_CALLBACK)
+-    void onBufferAttached() override {
+-        AsyncWorker::getInstance().post([listener = mListener]() { listener->onBufferAttached(); });
+-    }
+-#endif
+ };
+ 
+ #if COM_ANDROID_GRAPHICS_LIBGUI_FLAGS(BUFFER_RELEASE_CHANNEL)
+diff --git a/libs/gui/IProducerListener.cpp b/libs/gui/IProducerListener.cpp
+index 8b9b090496..7700795e1d 100644
+--- a/libs/gui/IProducerListener.cpp
++++ b/libs/gui/IProducerListener.cpp
+@@ -184,10 +184,4 @@ bool BnProducerListener::needsReleaseNotify() {
+ void BnProducerListener::onBuffersDiscarded(const std::vector<int32_t>& /*discardedSlots*/) {
+ }
+ 
+-#if COM_ANDROID_GRAPHICS_LIBGUI_FLAGS(BQ_CONSUMER_ATTACH_CALLBACK)
+-bool BnProducerListener::needsAttachNotify() {
+-    return true;
+-}
+-#endif
+-
+ } // namespace android
+diff --git a/libs/gui/include/gui/IProducerListener.h b/libs/gui/include/gui/IProducerListener.h
+index 43bf6a7d4b..3dcc6b6670 100644
+--- a/libs/gui/include/gui/IProducerListener.h
++++ b/libs/gui/include/gui/IProducerListener.h
+@@ -90,9 +90,6 @@ public:
+             Parcel* reply, uint32_t flags = 0);
+     virtual bool needsReleaseNotify();
+     virtual void onBuffersDiscarded(const std::vector<int32_t>& slots);
+-#if COM_ANDROID_GRAPHICS_LIBGUI_FLAGS(BQ_CONSUMER_ATTACH_CALLBACK)
+-    virtual bool needsAttachNotify();
+-#endif
+ };
+ 
+ #else
+@@ -106,9 +103,6 @@ public:
+     virtual ~StubProducerListener();
+     virtual void onBufferReleased() {}
+     virtual bool needsReleaseNotify() { return false; }
+-#if COM_ANDROID_GRAPHICS_LIBGUI_FLAGS(BQ_CONSUMER_ATTACH_CALLBACK)
+-    virtual bool needsAttachNotify() { return false; }
+-#endif
+ };
+ 
+ } // namespace android
+-- 
+2.52.0
+

@@ -1,0 +1,109 @@
+From 2b2f163bb4d59697183ccb9a3e9bc2de5a3f0733 Mon Sep 17 00:00:00 2001
+From: HinohArata <mmgcntk@gmail.com>
+Date: Sat, 19 Apr 2025 14:45:54 +0000
+Subject: [PATCH 5/5] gui: Refactor onBufferDetached to use value semantics
+
+Refactor the onBufferDetached callback signature to take an integer
+parameter by value instead of by pointer. This simplifies the API,
+avoids unnecessary pointer indirection, and aligns with other
+BufferQueue and SurfaceListener callback methods that use value
+semantics.
+
+All affected implementations and unit tests have been updated to
+reflect the new signature. This change improves readability and
+reduces the risk of null pointer dereferences when detaching buffers.
+
+No functional behavior changes intended.
+
+Test: BLASTBufferQueue_test
+Test: Surface_test
+
+Signed-off-by: HinohArata <mmgcntk@gmail.com>
+---
+ libs/gui/BufferQueueConsumer.cpp           | 1 -
+ libs/gui/include/gui/Surface.h             | 3 +--
+ libs/gui/tests/BLASTBufferQueue_test.cpp   | 1 -
+ libs/gui/tests/BufferItemConsumer_test.cpp | 1 -
+ libs/gui/tests/Surface_test.cpp            | 2 --
+ 5 files changed, 1 insertion(+), 7 deletions(-)
+
+diff --git a/libs/gui/BufferQueueConsumer.cpp b/libs/gui/BufferQueueConsumer.cpp
+index 05b644a3ec..4e2aaab3af 100644
+--- a/libs/gui/BufferQueueConsumer.cpp
++++ b/libs/gui/BufferQueueConsumer.cpp
+@@ -358,7 +358,6 @@ status_t BufferQueueConsumer::detachBuffer(int slot) {
+     mCore->mDequeueCondition.notify_all();
+ #endif
+     VALIDATE_CONSISTENCY();
+-
+     return NO_ERROR;
+ }
+ 
+diff --git a/libs/gui/include/gui/Surface.h b/libs/gui/include/gui/Surface.h
+index 0ad4cedc4b..a350cdec79 100644
+--- a/libs/gui/include/gui/Surface.h
++++ b/libs/gui/include/gui/Surface.h
+@@ -59,7 +59,7 @@ public:
+     virtual bool needsReleaseNotify() = 0;
+ 
+     virtual void onBuffersDiscarded(const std::vector<sp<GraphicBuffer>>& buffers) = 0;
+-    virtual void onBufferDetached(int slot) = 0;
++    virtual void onBufferDetached(int /*slot*/) {}
+ #if COM_ANDROID_GRAPHICS_LIBGUI_FLAGS(BQ_CONSUMER_ATTACH_CALLBACK)
+     virtual void onBufferAttached() {}
+     virtual bool needsAttachNotify() { return false; }
+@@ -82,7 +82,6 @@ public:
+     virtual void onBufferReleased() override {}
+     virtual bool needsReleaseNotify() { return false; }
+     virtual void onBuffersDiscarded(const std::vector<sp<GraphicBuffer>>& /*buffers*/) override {}
+-    virtual void onBufferDetached(int /*slot*/) override {}
+ };
+ 
+ #if COM_ANDROID_GRAPHICS_LIBGUI_FLAGS(WB_PLATFORM_API_IMPROVEMENTS)
+diff --git a/libs/gui/tests/BLASTBufferQueue_test.cpp b/libs/gui/tests/BLASTBufferQueue_test.cpp
+index 4e4c8a2b63..aea7a291d5 100644
+--- a/libs/gui/tests/BLASTBufferQueue_test.cpp
++++ b/libs/gui/tests/BLASTBufferQueue_test.cpp
+@@ -1350,7 +1350,6 @@ public:
+     }
+     bool needsReleaseNotify() override { return true; }
+     void onBuffersDiscarded(const std::vector<sp<GraphicBuffer>>& /*buffers*/) override {}
+-    void onBufferDetached(int /*slot*/) {}
+ };
+ 
+ TEST_F(BLASTBufferQueueTest, CustomProducerListener) {
+diff --git a/libs/gui/tests/BufferItemConsumer_test.cpp b/libs/gui/tests/BufferItemConsumer_test.cpp
+index 80eea267bf..e20c8c6e07 100644
+--- a/libs/gui/tests/BufferItemConsumer_test.cpp
++++ b/libs/gui/tests/BufferItemConsumer_test.cpp
+@@ -55,7 +55,6 @@ class BufferItemConsumerTest : public ::testing::Test {
+         virtual void onBufferReleased() override {}
+         virtual bool needsReleaseNotify() override { return true; }
+         virtual void onBuffersDiscarded(const std::vector<int32_t>&) override {}
+-        virtual void onBufferDetached(int slot) override { mTest->HandleBufferDetached(slot); }
+ 
+         BufferItemConsumerTest* mTest;
+     };
+diff --git a/libs/gui/tests/Surface_test.cpp b/libs/gui/tests/Surface_test.cpp
+index 4fee11c2cb..bbfcda63a3 100644
+--- a/libs/gui/tests/Surface_test.cpp
++++ b/libs/gui/tests/Surface_test.cpp
+@@ -100,7 +100,6 @@ public:
+     virtual void onBuffersDiscarded(const std::vector<sp<GraphicBuffer>>& buffers) {
+         mDiscardedBuffers.insert(mDiscardedBuffers.end(), buffers.begin(), buffers.end());
+     }
+-    virtual void onBufferDetached(int /*slot*/) {}
+     int getReleaseNotifyCount() const {
+         return mBuffersReleased;
+     }
+@@ -2373,7 +2372,6 @@ TEST_F(SurfaceTest, QueueAcquireReleaseDequeue_CalledInStack_DoesNotDeadlock) {
+ 
+         virtual bool needsReleaseNotify() override { return true; }
+         virtual void onBuffersDiscarded(const std::vector<sp<GraphicBuffer>>&) override {}
+-        virtual void onBufferDetached(int) override {}
+ 
+         sp<GraphicBuffer> mBuffer;
+         sp<Fence> mFence;
+-- 
+2.52.0
+

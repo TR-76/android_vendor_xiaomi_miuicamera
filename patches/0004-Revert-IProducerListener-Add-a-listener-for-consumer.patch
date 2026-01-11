@@ -1,0 +1,198 @@
+From 6fcf8d6e913941437ce41e976e8e6a9d107c3e26 Mon Sep 17 00:00:00 2001
+From: clarencelol <clarencekuiek@proton.me>
+Date: Mon, 9 Dec 2024 10:44:14 +0800
+Subject: [PATCH 4/5] Revert "IProducerListener: Add a listener for consumer
+ detach"
+
+This reverts commit 1e7c09b67034f3ff1c263b3c0b5ff0c6d46c6e4a.
+
+Change-Id: I9b81b02c293ee0018a79a6028ae97bf628968fc3
+Signed-off-by: Frost <159105703+Karan-Frost@users.noreply.github.com>
+Signed-off-by: Saikrishna1504 <saikrishna26918@gmail.com>
+Signed-off-by: HinohArata <mmgcntk@gmail.com>
+---
+ libs/gui/BufferQueueConsumer.cpp         | 60 +++++++++-----------
+ libs/gui/include/gui/IProducerListener.h |  6 --
+ libs/gui/tests/BufferQueue_test.cpp      | 70 ------------------------
+ 3 files changed, 25 insertions(+), 111 deletions(-)
+
+diff --git a/libs/gui/BufferQueueConsumer.cpp b/libs/gui/BufferQueueConsumer.cpp
+index 37a3e3a5f1..05b644a3ec 100644
+--- a/libs/gui/BufferQueueConsumer.cpp
++++ b/libs/gui/BufferQueueConsumer.cpp
+@@ -326,49 +326,39 @@ status_t BufferQueueConsumer::detachBuffer(int slot) {
+     ATRACE_CALL();
+     ATRACE_BUFFER_INDEX(slot);
+     BQ_LOGV("detachBuffer: slot %d", slot);
+-    sp<IProducerListener> listener;
+-    {
+-        std::lock_guard<std::mutex> lock(mCore->mMutex);
++    std::lock_guard<std::mutex> lock(mCore->mMutex);
+ 
+-        if (mCore->mIsAbandoned) {
+-            BQ_LOGE("detachBuffer: BufferQueue has been abandoned");
+-            return NO_INIT;
+-        }
++    if (mCore->mIsAbandoned) {
++        BQ_LOGE("detachBuffer: BufferQueue has been abandoned");
++        return NO_INIT;
++    }
+ 
+-        if (mCore->mSharedBufferMode || slot == mCore->mSharedBufferSlot) {
+-            BQ_LOGE("detachBuffer: detachBuffer not allowed in shared buffer mode");
+-            return BAD_VALUE;
+-        }
++    if (mCore->mSharedBufferMode || slot == mCore->mSharedBufferSlot) {
++        BQ_LOGE("detachBuffer: detachBuffer not allowed in shared buffer mode");
++        return BAD_VALUE;
++    }
+ 
+-        const int totalSlotCount = mCore->getTotalSlotCountLocked();
+-        if (slot < 0 || slot >= totalSlotCount) {
+-            BQ_LOGE("detachBuffer: slot index %d out of range [0, %d)", slot, totalSlotCount);
+-            return BAD_VALUE;
+-        } else if (!mSlots[slot].mBufferState.isAcquired()) {
+-            BQ_LOGE("detachBuffer: slot %d is not owned by the consumer "
+-                    "(state = %s)", slot, mSlots[slot].mBufferState.string());
+-            return BAD_VALUE;
+-        }
+-        if (mCore->mBufferReleasedCbEnabled) {
+-            listener = mCore->mConnectedProducerListener;
+-        }
++    const int totalSlotCount = mCore->getTotalSlotCountLocked();
++    if (slot < 0 || slot >= totalSlotCount) {
++        BQ_LOGE("detachBuffer: slot index %d out of range [0, %d)", slot, totalSlotCount);
++        return BAD_VALUE;
++    } else if (!mSlots[slot].mBufferState.isAcquired()) {
++        BQ_LOGE("detachBuffer: slot %d is not owned by the consumer "
++                "(state = %s)", slot, mSlots[slot].mBufferState.string());
++        return BAD_VALUE;
++    }
+ 
+-        mSlots[slot].mBufferState.detachConsumer();
+-        mCore->mActiveBuffers.erase(slot);
+-        mCore->mFreeSlots.insert(slot);
+-        mCore->clearBufferSlotLocked(slot);
++    mSlots[slot].mBufferState.detachConsumer();
++    mCore->mActiveBuffers.erase(slot);
++    mCore->mFreeSlots.insert(slot);
++    mCore->clearBufferSlotLocked(slot);
+ #if COM_ANDROID_GRAPHICS_LIBGUI_FLAGS(BUFFER_RELEASE_CHANNEL)
+-        mCore->notifyBufferReleased();
++    mCore->notifyBufferReleased();
+ #else
+-        mCore->mDequeueCondition.notify_all();
++    mCore->mDequeueCondition.notify_all();
+ #endif
++    VALIDATE_CONSISTENCY();
+ 
+-        VALIDATE_CONSISTENCY();
+-    }
+-
+-    if (listener) {
+-        listener->onBufferDetached(slot);
+-    }
+     return NO_ERROR;
+ }
+ 
+diff --git a/libs/gui/include/gui/IProducerListener.h b/libs/gui/include/gui/IProducerListener.h
+index b15f501518..f7ffbb99ea 100644
+--- a/libs/gui/include/gui/IProducerListener.h
++++ b/libs/gui/include/gui/IProducerListener.h
+@@ -49,12 +49,6 @@ public:
+     // onBuffersFreed is called from IGraphicBufferConsumer::discardFreeBuffers
+     // to notify the producer that certain free buffers are discarded by the consumer.
+     virtual void onBuffersDiscarded(const std::vector<int32_t>& slots) = 0; // Asynchronous
+-    // onBufferDetached is called from IGraphicBufferConsumer::detachBuffer to
+-    // notify the producer that a buffer slot is free and ready to be dequeued.
+-    //
+-    // This is called without any lock held and can be called concurrently by
+-    // multiple threads.
+-    virtual void onBufferDetached(int /*slot*/) {} // Asynchronous
+ };
+ 
+ #ifndef NO_BINDER
+diff --git a/libs/gui/tests/BufferQueue_test.cpp b/libs/gui/tests/BufferQueue_test.cpp
+index e93d92f66b..89dfa0d415 100644
+--- a/libs/gui/tests/BufferQueue_test.cpp
++++ b/libs/gui/tests/BufferQueue_test.cpp
+@@ -1221,76 +1221,6 @@ TEST_F(BufferQueueTest, TestBufferReplacedInQueueBuffer) {
+     ASSERT_EQ(true, output.bufferReplaced);
+ }
+ 
+-struct BufferDetachedListener : public BnProducerListener {
+-public:
+-    BufferDetachedListener() = default;
+-    virtual ~BufferDetachedListener() = default;
+-
+-    virtual void onBufferReleased() {}
+-    virtual bool needsReleaseNotify() { return true; }
+-    virtual void onBufferDetached(int slot) {
+-        mDetachedSlots.push_back(slot);
+-    }
+-    const std::vector<int>& getDetachedSlots() const { return mDetachedSlots; }
+-private:
+-    std::vector<int> mDetachedSlots;
+-};
+-
+-TEST_F(BufferQueueTest, TestConsumerDetachProducerListener) {
+-    createBufferQueue();
+-    sp<MockConsumer> mc(new MockConsumer);
+-    ASSERT_EQ(OK, mConsumer->consumerConnect(mc, true));
+-    IGraphicBufferProducer::QueueBufferOutput output;
+-    sp<BufferDetachedListener> pl(new BufferDetachedListener);
+-    ASSERT_EQ(OK, mProducer->connect(pl, NATIVE_WINDOW_API_CPU, true, &output));
+-    ASSERT_EQ(OK, mProducer->setDequeueTimeout(0));
+-    ASSERT_EQ(OK, mConsumer->setMaxAcquiredBufferCount(1));
+-
+-    sp<Fence> fence = Fence::NO_FENCE;
+-    sp<GraphicBuffer> buffer = nullptr;
+-    IGraphicBufferProducer::QueueBufferInput input(0ull, true,
+-        HAL_DATASPACE_UNKNOWN, Rect::INVALID_RECT,
+-        NATIVE_WINDOW_SCALING_MODE_FREEZE, 0, Fence::NO_FENCE);
+-
+-    int slots[2] = {};
+-    status_t result = OK;
+-    ASSERT_EQ(OK, mProducer->setMaxDequeuedBufferCount(2));
+-
+-    result = mProducer->dequeueBuffer(&slots[0], &fence, 0, 0, 0,
+-                                      GRALLOC_USAGE_SW_READ_RARELY, nullptr, nullptr);
+-    ASSERT_EQ(IGraphicBufferProducer::BUFFER_NEEDS_REALLOCATION, result);
+-    ASSERT_EQ(OK, mProducer->requestBuffer(slots[0], &buffer));
+-
+-    result = mProducer->dequeueBuffer(&slots[1], &fence, 0, 0, 0,
+-                                      GRALLOC_USAGE_SW_READ_RARELY, nullptr, nullptr);
+-    ASSERT_EQ(IGraphicBufferProducer::BUFFER_NEEDS_REALLOCATION, result);
+-    ASSERT_EQ(OK, mProducer->requestBuffer(slots[1], &buffer));
+-
+-    // Queue & detach one from two dequeued buffes.
+-    ASSERT_EQ(OK, mProducer->queueBuffer(slots[1], input, &output));
+-    BufferItem item{};
+-    ASSERT_EQ(OK, mConsumer->acquireBuffer(&item, 0));
+-    ASSERT_EQ(OK, mConsumer->detachBuffer(item.mSlot));
+-
+-    // Check whether the slot from IProducerListener is same to the detached slot.
+-    ASSERT_EQ(pl->getDetachedSlots().size(), 1u);
+-    ASSERT_EQ(pl->getDetachedSlots()[0], slots[1]);
+-
+-    // Dequeue another buffer.
+-    int slot;
+-    result = mProducer->dequeueBuffer(&slot, &fence, 0, 0, 0,
+-                                      GRALLOC_USAGE_SW_READ_RARELY, nullptr, nullptr);
+-    ASSERT_EQ(IGraphicBufferProducer::BUFFER_NEEDS_REALLOCATION, result);
+-    ASSERT_EQ(OK, mProducer->requestBuffer(slot, &buffer));
+-
+-    // Dequeue should fail here, since we dequeued 3 buffers and one buffer was
+-    // detached from consumer(Two buffers are dequeued, and the current max
+-    // dequeued buffer count is two).
+-    result = mProducer->dequeueBuffer(&slot, &fence, 0, 0, 0,
+-                                      GRALLOC_USAGE_SW_READ_RARELY, nullptr, nullptr);
+-    ASSERT_TRUE(result == WOULD_BLOCK || result == TIMED_OUT || result == INVALID_OPERATION);
+-}
+-
+ TEST_F(BufferQueueTest, TestStaleBufferHandleSentAfterDisconnect) {
+     createBufferQueue();
+     sp<MockConsumer> mc(new MockConsumer);
+-- 
+2.52.0
+

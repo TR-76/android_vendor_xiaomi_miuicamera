@@ -1,0 +1,446 @@
+From 56046b25a485609bd86d6ce0aa809b806447cd54 Mon Sep 17 00:00:00 2001
+From: clarencelol <clarencekuiek@proton.me>
+Date: Mon, 9 Dec 2024 10:42:03 +0800
+Subject: [PATCH 3/5] Revert "Add IProducerListener::onBufferAttached"
+
+This reverts commit 6d223cbd07f0582ac99e4b607f6983284638aa0b.
+
+Change-Id: Iaa6f872313cb6c6433c73d715d5f16d853d4a3f9
+Signed-off-by: Frost <159105703+Karan-Frost@users.noreply.github.com>
+Signed-off-by: Saikrishna1504 <saikrishna26918@gmail.com>
+Signed-off-by: HinohArata <mmgcntk@gmail.com>
+---
+ libs/gui/BufferQueueConsumer.cpp         | 149 ++++++++++-------------
+ libs/gui/BufferQueueCore.cpp             |   1 -
+ libs/gui/BufferQueueProducer.cpp         |   3 -
+ libs/gui/IProducerListener.cpp           |  56 ---------
+ libs/gui/include/gui/BufferQueueCore.h   |   4 -
+ libs/gui/include/gui/IProducerListener.h |  12 --
+ libs/gui/tests/BufferQueue_test.cpp      |  85 -------------
+ 7 files changed, 66 insertions(+), 244 deletions(-)
+
+diff --git a/libs/gui/BufferQueueConsumer.cpp b/libs/gui/BufferQueueConsumer.cpp
+index 4681c9ecbe..37a3e3a5f1 100644
+--- a/libs/gui/BufferQueueConsumer.cpp
++++ b/libs/gui/BufferQueueConsumer.cpp
+@@ -42,8 +42,6 @@
+ 
+ #include <system/window.h>
+ 
+-#include <com_android_graphics_libgui_flags.h>
+-
+ #include <inttypes.h>
+ #include <pwd.h>
+ #include <sys/types.h>
+@@ -386,94 +384,79 @@ status_t BufferQueueConsumer::attachBuffer(int* outSlot,
+         return BAD_VALUE;
+     }
+ 
+-    sp<IProducerListener> listener;
+-    {
+-        std::lock_guard<std::mutex> lock(mCore->mMutex);
+-
+-        if (mCore->mSharedBufferMode) {
+-            BQ_LOGE("attachBuffer: cannot attach a buffer in shared buffer mode");
+-            return BAD_VALUE;
+-        }
+-
+-        // Make sure we don't have too many acquired buffers
+-        int numAcquiredBuffers = 0;
+-        for (int s : mCore->mActiveBuffers) {
+-            if (mSlots[s].mBufferState.isAcquired()) {
+-                ++numAcquiredBuffers;
+-            }
+-        }
+-
+-        if (numAcquiredBuffers >= mCore->mMaxAcquiredBufferCount + 1) {
+-            BQ_LOGE("attachBuffer: max acquired buffer count reached: %d "
+-                    "(max %d)", numAcquiredBuffers,
+-                    mCore->mMaxAcquiredBufferCount);
+-            return INVALID_OPERATION;
+-        }
+-
+-        if (buffer->getGenerationNumber() != mCore->mGenerationNumber) {
+-            BQ_LOGE("attachBuffer: generation number mismatch [buffer %u] "
+-                    "[queue %u]", buffer->getGenerationNumber(),
+-                    mCore->mGenerationNumber);
+-            return BAD_VALUE;
+-        }
++    std::lock_guard<std::mutex> lock(mCore->mMutex);
+ 
+-        // Find a free slot to put the buffer into
+-        int found = BufferQueueCore::INVALID_BUFFER_SLOT;
+-        if (!mCore->mFreeSlots.empty()) {
+-            auto slot = mCore->mFreeSlots.begin();
+-            found = *slot;
+-            mCore->mFreeSlots.erase(slot);
+-        } else if (!mCore->mFreeBuffers.empty()) {
+-            found = mCore->mFreeBuffers.front();
+-            mCore->mFreeBuffers.remove(found);
+-        }
+-        if (found == BufferQueueCore::INVALID_BUFFER_SLOT) {
+-            BQ_LOGE("attachBuffer: could not find free buffer slot");
+-            return NO_MEMORY;
+-        }
++    if (mCore->mSharedBufferMode) {
++        BQ_LOGE("attachBuffer: cannot attach a buffer in shared buffer mode");
++        return BAD_VALUE;
++    }
+ 
+-#if COM_ANDROID_GRAPHICS_LIBGUI_FLAGS(BQ_CONSUMER_ATTACH_CALLBACK)
+-        if (mCore->mBufferAttachedCbEnabled) {
+-            listener = mCore->mConnectedProducerListener;
++    // Make sure we don't have too many acquired buffers
++    int numAcquiredBuffers = 0;
++    for (int s : mCore->mActiveBuffers) {
++        if (mSlots[s].mBufferState.isAcquired()) {
++            ++numAcquiredBuffers;
+         }
+-#endif
+-
+-        mCore->mActiveBuffers.insert(found);
+-        *outSlot = found;
+-        ATRACE_BUFFER_INDEX(*outSlot);
+-        BQ_LOGV("attachBuffer: returning slot %d", *outSlot);
+-
+-        mSlots[*outSlot].mGraphicBuffer = buffer;
+-        mSlots[*outSlot].mBufferState.attachConsumer();
+-        mSlots[*outSlot].mNeedsReallocation = true;
+-        mSlots[*outSlot].mFence = Fence::NO_FENCE;
+-        mSlots[*outSlot].mFrameNumber = 0;
+-
+-        // mAcquireCalled tells BufferQueue that it doesn't need to send a valid
+-        // GraphicBuffer pointer on the next acquireBuffer call, which decreases
+-        // Binder traffic by not un/flattening the GraphicBuffer. However, it
+-        // requires that the consumer maintain a cached copy of the slot <--> buffer
+-        // mappings, which is why the consumer doesn't need the valid pointer on
+-        // acquire.
+-        //
+-        // The StreamSplitter is one of the primary users of the attach/detach
+-        // logic, and while it is running, all buffers it acquires are immediately
+-        // detached, and all buffers it eventually releases are ones that were
+-        // attached (as opposed to having been obtained from acquireBuffer), so it
+-        // doesn't make sense to maintain the slot/buffer mappings, which would
+-        // become invalid for every buffer during detach/attach. By setting this to
+-        // false, the valid GraphicBuffer pointer will always be sent with acquire
+-        // for attached buffers.
+-        mSlots[*outSlot].mAcquireCalled = false;
++    }
+ 
+-        VALIDATE_CONSISTENCY();
++    if (numAcquiredBuffers >= mCore->mMaxAcquiredBufferCount + 1) {
++        BQ_LOGE("attachBuffer: max acquired buffer count reached: %d "
++                "(max %d)", numAcquiredBuffers,
++                mCore->mMaxAcquiredBufferCount);
++        return INVALID_OPERATION;
+     }
+ 
+-#if COM_ANDROID_GRAPHICS_LIBGUI_FLAGS(BQ_CONSUMER_ATTACH_CALLBACK)
+-    if (listener != nullptr) {
+-        listener->onBufferAttached();
++    if (buffer->getGenerationNumber() != mCore->mGenerationNumber) {
++        BQ_LOGE("attachBuffer: generation number mismatch [buffer %u] "
++                "[queue %u]", buffer->getGenerationNumber(),
++                mCore->mGenerationNumber);
++        return BAD_VALUE;
+     }
+-#endif
++
++    // Find a free slot to put the buffer into
++    int found = BufferQueueCore::INVALID_BUFFER_SLOT;
++    if (!mCore->mFreeSlots.empty()) {
++        auto slot = mCore->mFreeSlots.begin();
++        found = *slot;
++        mCore->mFreeSlots.erase(slot);
++    } else if (!mCore->mFreeBuffers.empty()) {
++        found = mCore->mFreeBuffers.front();
++        mCore->mFreeBuffers.remove(found);
++    }
++    if (found == BufferQueueCore::INVALID_BUFFER_SLOT) {
++        BQ_LOGE("attachBuffer: could not find free buffer slot");
++        return NO_MEMORY;
++    }
++
++    mCore->mActiveBuffers.insert(found);
++    *outSlot = found;
++    ATRACE_BUFFER_INDEX(*outSlot);
++    BQ_LOGV("attachBuffer: returning slot %d", *outSlot);
++
++    mSlots[*outSlot].mGraphicBuffer = buffer;
++    mSlots[*outSlot].mBufferState.attachConsumer();
++    mSlots[*outSlot].mNeedsReallocation = true;
++    mSlots[*outSlot].mFence = Fence::NO_FENCE;
++    mSlots[*outSlot].mFrameNumber = 0;
++
++    // mAcquireCalled tells BufferQueue that it doesn't need to send a valid
++    // GraphicBuffer pointer on the next acquireBuffer call, which decreases
++    // Binder traffic by not un/flattening the GraphicBuffer. However, it
++    // requires that the consumer maintain a cached copy of the slot <--> buffer
++    // mappings, which is why the consumer doesn't need the valid pointer on
++    // acquire.
++    //
++    // The StreamSplitter is one of the primary users of the attach/detach
++    // logic, and while it is running, all buffers it acquires are immediately
++    // detached, and all buffers it eventually releases are ones that were
++    // attached (as opposed to having been obtained from acquireBuffer), so it
++    // doesn't make sense to maintain the slot/buffer mappings, which would
++    // become invalid for every buffer during detach/attach. By setting this to
++    // false, the valid GraphicBuffer pointer will always be sent with acquire
++    // for attached buffers.
++    mSlots[*outSlot].mAcquireCalled = false;
++
++    VALIDATE_CONSISTENCY();
+ 
+     return NO_ERROR;
+ }
+diff --git a/libs/gui/BufferQueueCore.cpp b/libs/gui/BufferQueueCore.cpp
+index 6c79904475..904b1753bb 100644
+--- a/libs/gui/BufferQueueCore.cpp
++++ b/libs/gui/BufferQueueCore.cpp
+@@ -98,7 +98,6 @@ BufferQueueCore::BufferQueueCore()
+         mLinkedToDeath(),
+         mConnectedProducerListener(),
+         mBufferReleasedCbEnabled(false),
+-        mBufferAttachedCbEnabled(false),
+ #if COM_ANDROID_GRAPHICS_LIBGUI_FLAGS(WB_UNLIMITED_SLOTS)
+         mSlots(BufferQueueDefs::NUM_BUFFER_SLOTS),
+ #else
+diff --git a/libs/gui/BufferQueueProducer.cpp b/libs/gui/BufferQueueProducer.cpp
+index 43c40e0253..a022e54b9e 100644
+--- a/libs/gui/BufferQueueProducer.cpp
++++ b/libs/gui/BufferQueueProducer.cpp
+@@ -1479,9 +1479,6 @@ status_t BufferQueueProducer::connect(const sp<IProducerListener>& listener,
+ #endif
+                 mCore->mConnectedProducerListener = listener;
+                 mCore->mBufferReleasedCbEnabled = listener->needsReleaseNotify();
+-#if COM_ANDROID_GRAPHICS_LIBGUI_FLAGS(BQ_CONSUMER_ATTACH_CALLBACK)
+-                mCore->mBufferAttachedCbEnabled = listener->needsAttachNotify();
+-#endif
+             }
+             break;
+         default:
+diff --git a/libs/gui/IProducerListener.cpp b/libs/gui/IProducerListener.cpp
+index 7700795e1d..0683087211 100644
+--- a/libs/gui/IProducerListener.cpp
++++ b/libs/gui/IProducerListener.cpp
+@@ -25,9 +25,6 @@ enum {
+     ON_BUFFER_RELEASED = IBinder::FIRST_CALL_TRANSACTION,
+     NEEDS_RELEASE_NOTIFY,
+     ON_BUFFERS_DISCARDED,
+-    ON_BUFFER_DETACHED,
+-    ON_BUFFER_ATTACHED,
+-    NEEDS_ATTACH_NOTIFY,
+ };
+ 
+ class BpProducerListener : public BpInterface<IProducerListener>
+@@ -67,38 +64,6 @@ public:
+         data.writeInt32Vector(discardedSlots);
+         remote()->transact(ON_BUFFERS_DISCARDED, data, &reply, IBinder::FLAG_ONEWAY);
+     }
+-
+-#if COM_ANDROID_GRAPHICS_LIBGUI_FLAGS(BQ_CONSUMER_ATTACH_CALLBACK)
+-    virtual void onBufferDetached(int slot) {
+-        Parcel data, reply;
+-        data.writeInterfaceToken(IProducerListener::getInterfaceDescriptor());
+-        data.writeInt32(slot);
+-        remote()->transact(ON_BUFFER_DETACHED, data, &reply, IBinder::FLAG_ONEWAY);
+-    }
+-
+-    virtual void onBufferAttached() {
+-        Parcel data, reply;
+-        data.writeInterfaceToken(IProducerListener::getInterfaceDescriptor());
+-        remote()->transact(ON_BUFFER_ATTACHED, data, &reply, IBinder::FLAG_ONEWAY);
+-    }
+-
+-    virtual bool needsAttachNotify() {
+-        bool result;
+-        Parcel data, reply;
+-        data.writeInterfaceToken(IProducerListener::getInterfaceDescriptor());
+-        status_t err = remote()->transact(NEEDS_ATTACH_NOTIFY, data, &reply);
+-        if (err != NO_ERROR) {
+-            ALOGE("IProducerListener: binder call \'needsAttachNotify\' failed");
+-            return true;
+-        }
+-        err = reply.readBool(&result);
+-        if (err != NO_ERROR) {
+-            ALOGE("IProducerListener: malformed binder reply");
+-            return true;
+-        }
+-        return result;
+-    }
+-#endif
+ };
+ 
+ // Out-of-line virtual method definition to trigger vtable emission in this
+@@ -150,27 +115,6 @@ status_t BnProducerListener::onTransact(uint32_t code, const Parcel& data,
+             onBuffersDiscarded(discardedSlots);
+             return NO_ERROR;
+         }
+-#if COM_ANDROID_GRAPHICS_LIBGUI_FLAGS(BQ_CONSUMER_ATTACH_CALLBACK)
+-        case ON_BUFFER_DETACHED: {
+-            CHECK_INTERFACE(IProducerListener, data, reply);
+-            int slot;
+-            status_t result = data.readInt32(&slot);
+-            if (result != NO_ERROR) {
+-                ALOGE("ON_BUFFER_DETACHED failed to read slot: %d", result);
+-                return result;
+-            }
+-            onBufferDetached(slot);
+-            return NO_ERROR;
+-        }
+-        case ON_BUFFER_ATTACHED:
+-            CHECK_INTERFACE(IProducerListener, data, reply);
+-            onBufferAttached();
+-            return NO_ERROR;
+-        case NEEDS_ATTACH_NOTIFY:
+-            CHECK_INTERFACE(IProducerListener, data, reply);
+-            reply->writeBool(needsAttachNotify());
+-            return NO_ERROR;
+-#endif
+     }
+     return BBinder::onTransact(code, data, reply, flags);
+ }
+diff --git a/libs/gui/include/gui/BufferQueueCore.h b/libs/gui/include/gui/BufferQueueCore.h
+index 7f92a46053..4e7101cfa7 100644
+--- a/libs/gui/include/gui/BufferQueueCore.h
++++ b/libs/gui/include/gui/BufferQueueCore.h
+@@ -208,10 +208,6 @@ private:
+     // callback is registered by the listener. When set to false,
+     // mConnectedProducerListener will not trigger onBufferReleased() callback.
+     bool mBufferReleasedCbEnabled;
+-    // mBufferAttachedCbEnabled is used to indicate whether onBufferAttached()
+-    // callback is registered by the listener. When set to false,
+-    // mConnectedProducerListener will not trigger onBufferAttached() callback.
+-    bool mBufferAttachedCbEnabled;
+ 
+     // mSlots is a collection of buffer slots that must be mirrored on the producer
+     // side. This allows buffer ownership to be transferred between the producer
+diff --git a/libs/gui/include/gui/IProducerListener.h b/libs/gui/include/gui/IProducerListener.h
+index 3dcc6b6670..b15f501518 100644
+--- a/libs/gui/include/gui/IProducerListener.h
++++ b/libs/gui/include/gui/IProducerListener.h
+@@ -25,8 +25,6 @@
+ #include <hidl/HybridInterface.h>
+ #include <utils/RefBase.h>
+ 
+-#include <com_android_graphics_libgui_flags.h>
+-
+ namespace android {
+ 
+ // ProducerListener is the interface through which the BufferQueue notifies the
+@@ -57,16 +55,6 @@ public:
+     // This is called without any lock held and can be called concurrently by
+     // multiple threads.
+     virtual void onBufferDetached(int /*slot*/) {} // Asynchronous
+-#if COM_ANDROID_GRAPHICS_LIBGUI_FLAGS(BQ_CONSUMER_ATTACH_CALLBACK)
+-    // onBufferAttached is called from IGraphicBufferConsumer::attachBuffer to
+-    // notify the producer that a buffer is attached.
+-    //
+-    // This is called without any lock held and can be called concurrently by
+-    // multiple threads. This callback is enabled only when needsAttachNotify()
+-    // returns {@code true}.
+-    virtual void onBufferAttached() {} // Asynchronous
+-    virtual bool needsAttachNotify() { return false; }
+-#endif
+ };
+ 
+ #ifndef NO_BINDER
+diff --git a/libs/gui/tests/BufferQueue_test.cpp b/libs/gui/tests/BufferQueue_test.cpp
+index e22f57e43e..e93d92f66b 100644
+--- a/libs/gui/tests/BufferQueue_test.cpp
++++ b/libs/gui/tests/BufferQueue_test.cpp
+@@ -1291,91 +1291,6 @@ TEST_F(BufferQueueTest, TestConsumerDetachProducerListener) {
+     ASSERT_TRUE(result == WOULD_BLOCK || result == TIMED_OUT || result == INVALID_OPERATION);
+ }
+ 
+-#if COM_ANDROID_GRAPHICS_LIBGUI_FLAGS(BQ_CONSUMER_ATTACH_CALLBACK)
+-struct BufferAttachedListener : public BnProducerListener {
+-public:
+-    BufferAttachedListener(bool enable) : mEnabled(enable), mAttached(0) {}
+-    virtual ~BufferAttachedListener() = default;
+-
+-    virtual void onBufferReleased() {}
+-    virtual bool needsReleaseNotify() { return true; }
+-    virtual void onBufferAttached() {
+-        ++mAttached;
+-    }
+-    virtual bool needsAttachNotify() { return mEnabled; }
+-
+-    int getNumAttached() const { return mAttached; }
+-private:
+-    const bool mEnabled;
+-    int mAttached;
+-};
+-
+-TEST_F(BufferQueueTest, TestConsumerAttachProducerListener) {
+-    createBufferQueue();
+-    sp<MockConsumer> mc1(new MockConsumer);
+-    ASSERT_EQ(OK, mConsumer->consumerConnect(mc1, true));
+-    IGraphicBufferProducer::QueueBufferOutput output;
+-    // Do not enable attach callback.
+-    sp<BufferAttachedListener> pl1(new BufferAttachedListener(false));
+-    ASSERT_EQ(OK, mProducer->connect(pl1, NATIVE_WINDOW_API_CPU, true, &output));
+-    ASSERT_EQ(OK, mProducer->setDequeueTimeout(0));
+-    ASSERT_EQ(OK, mConsumer->setMaxAcquiredBufferCount(1));
+-
+-    sp<Fence> fence = Fence::NO_FENCE;
+-    sp<GraphicBuffer> buffer = nullptr;
+-
+-    int slot;
+-    status_t result = OK;
+-
+-    ASSERT_EQ(OK, mProducer->setMaxDequeuedBufferCount(1));
+-
+-    result = mProducer->dequeueBuffer(&slot, &fence, 0, 0, 0,
+-                                      GRALLOC_USAGE_SW_READ_RARELY, nullptr, nullptr);
+-    ASSERT_EQ(IGraphicBufferProducer::BUFFER_NEEDS_REALLOCATION, result);
+-    ASSERT_EQ(OK, mProducer->requestBuffer(slot, &buffer));
+-    ASSERT_EQ(OK, mProducer->detachBuffer(slot));
+-
+-    // Check # of attach is zero.
+-    ASSERT_EQ(0, pl1->getNumAttached());
+-
+-    // Attach a buffer and check the callback was not called.
+-    ASSERT_EQ(OK, mConsumer->attachBuffer(&slot, buffer));
+-    ASSERT_EQ(0, pl1->getNumAttached());
+-
+-    mProducer = nullptr;
+-    mConsumer = nullptr;
+-    createBufferQueue();
+-
+-    sp<MockConsumer> mc2(new MockConsumer);
+-    ASSERT_EQ(OK, mConsumer->consumerConnect(mc2, true));
+-    // Enable attach callback.
+-    sp<BufferAttachedListener> pl2(new BufferAttachedListener(true));
+-    ASSERT_EQ(OK, mProducer->connect(pl2, NATIVE_WINDOW_API_CPU, true, &output));
+-    ASSERT_EQ(OK, mProducer->setDequeueTimeout(0));
+-    ASSERT_EQ(OK, mConsumer->setMaxAcquiredBufferCount(1));
+-
+-    fence = Fence::NO_FENCE;
+-    buffer = nullptr;
+-
+-    result = OK;
+-
+-    ASSERT_EQ(OK, mProducer->setMaxDequeuedBufferCount(1));
+-
+-    result = mProducer->dequeueBuffer(&slot, &fence, 0, 0, 0,
+-                                      GRALLOC_USAGE_SW_READ_RARELY, nullptr, nullptr);
+-    ASSERT_EQ(IGraphicBufferProducer::BUFFER_NEEDS_REALLOCATION, result);
+-    ASSERT_EQ(OK, mProducer->requestBuffer(slot, &buffer));
+-    ASSERT_EQ(OK, mProducer->detachBuffer(slot));
+-
+-    // Check # of attach is zero.
+-    ASSERT_EQ(0, pl2->getNumAttached());
+-
+-    // Attach a buffer and check the callback was called.
+-    ASSERT_EQ(OK, mConsumer->attachBuffer(&slot, buffer));
+-    ASSERT_EQ(1, pl2->getNumAttached());
+-}
+-#endif
+-
+ TEST_F(BufferQueueTest, TestStaleBufferHandleSentAfterDisconnect) {
+     createBufferQueue();
+     sp<MockConsumer> mc(new MockConsumer);
+-- 
+2.52.0
+
