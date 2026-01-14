@@ -243,3 +243,34 @@ cc_prebuilt_library_shared {
 	prefer: true,
         sdk_version: "current",
 }
+
+cc_prebuilt_library_shared {
+    name: "libOpenCL_system",
+    owner: "xiaomi",
+    strip: {
+        none: true,
+    },
+    target: {
+        android_arm: {
+            srcs: [
+                "proprietary/system/lib/libOpenCL.so",
+            ],
+        },
+        android_arm64: {
+            srcs: [
+                "proprietary/system/lib64/libOpenCL.so",
+            ],
+        },
+    },
+    shared_libs: [
+        "libcutils",
+        "libvndksupport",
+        "libc++",
+        "libc",
+        "libm",
+        "libdl",
+    ],
+    compile_multilib: "both",
+    prefer: true,
+    stem: "libOpenCL",
+}

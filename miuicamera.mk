@@ -73,7 +73,8 @@ PRODUCT_PACKAGES += \
     libmicampostproc_client \
     vendor.xiaomi.hardware.campostproc@1.0 \
     libgui-xiaomi \
-    libgui_shim_miuicamera
+    libgui_shim_miuicamera \
+    libOpenCL_system
 
 # Dex
 PRODUCT_DEXPREOPT_SPEED_APPS += \
