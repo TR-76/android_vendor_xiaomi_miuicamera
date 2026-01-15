@@ -34,9 +34,6 @@ PRODUCT_SYSTEM_PROPERTIES += \
     persist.vendor.camera.privapp.list=com.android.camera \
     persist.sys.cam.skip_detach_image=true
 
-# HIDL
-DEVICE_FRAMEWORK_COMPATIBILITY_MATRIX_FILE += $(MIUICAMERA_PATH)/configs/hidl/xiaomi_framework_compatibility_matrix.xml
-
 PRODUCT_PACKAGES += \
     android.hidl.memory.block@1.0 \
     android.hidl.memory.block@1.0.vendor

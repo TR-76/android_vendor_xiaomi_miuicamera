@@ -86,6 +86,14 @@ prebuilt_etc_xml {
 	soc_specific: true,
 }
 
+vintf_compatibility_matrix {
+    name: "xiaomi_camera_compatibility_matrix",
+    stem: "compatibility_matrix_camera.xiaomi.xml",
+    srcs: [
+        "configs/hidl/xiaomi_camera_compatibility_matrix.xml",
+    ],
+}
+
 cc_prebuilt_library_shared {
 	name: "libcamera_algoup_jni.xiaomi",
 	owner: "xiaomi",

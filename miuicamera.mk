@@ -69,7 +69,8 @@ PRODUCT_PACKAGES += \
     libgui-xiaomi \
     libgui_shim_miuicamera \
     libOpenCL_system \
-    libSNPE_system
+    libSNPE_system \
+    xiaomi_camera_compatibility_matrix
 
 # Dex
 PRODUCT_DEXPREOPT_SPEED_APPS += \
