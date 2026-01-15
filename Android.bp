@@ -5,6 +5,7 @@
 soong_namespace {
 	imports: [
 		"vendor/xiaomi/camera",
+		"vendor/xiaomi/surya",
 	],
 }
 
@@ -273,4 +274,30 @@ cc_prebuilt_library_shared {
     compile_multilib: "both",
     prefer: true,
     stem: "libOpenCL",
+}
+
+cc_prebuilt_library_shared {
+    name: "libSNPE_system",
+    owner: "xiaomi",
+    strip: {
+        none: true,
+    },
+    target: {
+        android_arm64: {
+            srcs: [
+                "proprietary/system/lib64/libSNPE.so",
+            ],
+            shared_libs: [
+                "libsymphony-cpu",
+                "libdl",
+                "liblog",
+                "libc++_shared",
+                "libc",
+                "libm",
+            ],
+        },
+    },
+    compile_multilib: "64",
+    prefer: true,
+    stem: "libSNPE",
 }

@@ -53,7 +53,6 @@ vendor/lib64/vendor.xiaomi.hardware.misys@4.0.so|cd52e318ded1951c029a5857ec848af
 system/etc/public.libraries-xiaomi.txt|a09ea720d0d058074b728c96ccdb1a755426041c
 
 # System - from CRdroid repository
-system/lib64/android.hardware.camera.common@1.0.so|587fd9ac5502844a9904cdf39583ba9580578a3e
 system/lib64/libSNPE.so|f3ffab1527763de07abd6ea4889673574b3b1a48
 system/lib64/libarcsoft_single_chart_calibration.so|cb37de29857fe1703530de6e5a54038a9620ddcd
 system/priv-app/MiuiCamera/lib/arm64/libcamera_algoup_jni.xiaomi.so
